@@ -26,12 +26,12 @@ If you'd like to connect to the database being used in the example follow the st
 CREATE DATABASE calendar_app;
 
 CREATE TABLE calendar (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE calendar_event (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
     calendar_id INT(11) NOT NULL,
     title VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
