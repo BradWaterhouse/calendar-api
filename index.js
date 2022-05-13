@@ -1,8 +1,10 @@
 const express = require('express');
 const mysql = require('mysql');
+const cors = require('cors');
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 require('dotenv').config();
 
@@ -10,7 +12,7 @@ const connection = mysql.createConnection({
     host: process.env.DATABASE_HOST,
     user: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,
-    database: process.env.DATABASE_NAME
+    database: process.env.DATABASE_NAME,
 });
 
 app.get('/test', (req, res) => {
@@ -23,7 +25,7 @@ app.get('/test', (req, res) => {
     });
 });
 
-app.get('/select-calendar', async (req, res) => {
+app.get('/calendar/select', async (req, res) => {
     connection.query(`SELECT * FROM calendar`, (error, results, fields) => {
         if (error) {
             res.send(error.message);
@@ -32,7 +34,7 @@ app.get('/select-calendar', async (req, res) => {
     });
 });
 
-app.post('/select-events', async (req, res) => {
+app.post('/calendar/events', async (req, res) => {
     const request = req.body;
 
     connection.query(`SELECT * FROM calendar_event WHERE calendar_id = ?`, [request.id], (error, results, fields) => {
@@ -43,7 +45,7 @@ app.post('/select-events', async (req, res) => {
     });
 });
 
-app.post('/insert-calendar', async (req, res) => {
+app.post('/calendar/insert', async (req, res) => {
     const request = req.body;
 
     connection.query(`INSERT INTO calendar (name) VALUES (?)`, [request.name], (error, results, fields) => {
@@ -54,17 +56,18 @@ app.post('/insert-calendar', async (req, res) => {
     });
 });
 
-app.post('/insert-event', async (req, res) => {
+app.post('/event/insert', async (req, res) => {
     const request = req.body;
 
     connection.query(`
-        INSERT INTO calendar_event (calendar_id, title, description, date_time)
+        INSERT INTO calendar_event (calendar_id, title, description, date, time)
         VALUES (?, ?, ?, ?)`,
         [
             request.calendar_id,
             request.title,
             request.description,
-            request.date_time
+            request.date,
+            request.time
         ],
         (error, results, fields) => {
         if (error) {
@@ -74,12 +77,12 @@ app.post('/insert-event', async (req, res) => {
     });
 });
 
-app.post('/edit-event', async (req, res) => {
+app.post('/event/edit', async (req, res) => {
     const request = req.body;
 
-    const query = "UPDATE calendar_event SET `title` = ?, `description` = ?, `date_time` = ? WHERE id = ?)"
+    const query = "UPDATE calendar_event SET `title` = ?, `description` = ?, `date` = ?, `time` = ?WHERE id = ?)"
 
-    connection.query(query, [request.title, request.description, request.date_time, request.id],
+    connection.query(query, [request.title, request.description, request.date, request.time, request.id],
         (error, results, fields) => {
             if (error) {
                 res.send(error.message);
@@ -89,7 +92,7 @@ app.post('/edit-event', async (req, res) => {
 });
 
 
-app.post('/delete-event', async (req, res) => {
+app.post('/event/delete', async (req, res) => {
     const request = req.body;
 
     connection.query(`DELETE FROM calendar_event WHERE id = ?`, [request.id], (error, results, fields) => {
@@ -100,4 +103,4 @@ app.post('/delete-event', async (req, res) => {
         });
 });
 
-app.listen(8888, () => console.log('alive on http://localhost:8888'));
+app.listen(8888, () => console.log('alive on http://localhost:8888 💻'));
