@@ -61,9 +61,9 @@ app.post('/event/insert', async (req, res) => {
 
     connection.query(`
         INSERT INTO calendar_event (calendar_id, title, description, date, time)
-        VALUES (?, ?, ?, ?)`,
+        VALUES (?, ?, ?, ?, ?)`,
         [
-            request.calendar_id,
+            request.calendarId,
             request.title,
             request.description,
             request.date,
@@ -71,9 +71,9 @@ app.post('/event/insert', async (req, res) => {
         ],
         (error, results, fields) => {
         if (error) {
-            res.send(error.message);
+            res.send({error: "something has gone wrong!"});
         }
-        res.send({data: "new calendar event added"});
+        res.send({success: "new calendar event added"});
     });
 });
 
