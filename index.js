@@ -60,14 +60,15 @@ app.post('/event/insert', async (req, res) => {
     const request = req.body;
 
     connection.query(`
-        INSERT INTO calendar_event (calendar_id, title, description, date, time)
-        VALUES (?, ?, ?, ?, ?)`,
+        INSERT INTO calendar_event (calendar_id, title, description, start_date, start_time, end_date)
+        VALUES (?, ?, ?, ?, ?, ?)`,
         [
             request.calendarId,
             request.title,
             request.description,
-            request.date,
-            request.time
+            request.start_date,
+            request.start_time,
+            request.end_date
         ],
         (error, results, fields) => {
         if (error) {
